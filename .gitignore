@@ -1,3 +1,7 @@
+*.swp
+src/temp/*
+build/
+
 # Prerequisites
 *.d
 
