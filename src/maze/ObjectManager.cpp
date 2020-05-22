@@ -17,7 +17,7 @@ ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHe
     boardWidth(boardWidth),
     boardHeight(boardHeight),
     lTexture(lTexture),
-    position({(MAZE_COLUMNS * CELL_SIZE) / 2, (MAZE_ROWS * CELL_SIZE) / 2}),
+    position({((MAZE_COLUMNS * CELL_SIZE) / 2) * 8, ((MAZE_ROWS * CELL_SIZE) / 2) * 8}),
     showMap(false)
 {
 }
@@ -100,6 +100,11 @@ std::vector<Cell> ObjectManager::getRoom()
     }
 
     return room;
+}
+
+Position ObjectManager::getPosition()
+{
+    return position;
 }
 
 bool ObjectManager::isInside(int x, int y, Cell cell)

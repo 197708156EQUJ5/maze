@@ -129,15 +129,10 @@ void Board::gameLoop()
 
 void Board::drawRoom()
 {
-    int roomSize = this->objectManager->getRoom().size();
-
-    int index = 0;
-    for (Cell &cell : this->objectManager->getRoom())
+    Position position = this->objectManager->getPosition();
+    for (Cell cell : this->objectManager->getCells())
     {
-        cell.row = index / 2;
-        cell.col = index % 2;
-        drawCell(cell, 12, 80, 0, this->objectManager->isMapVisible() ? 0x30 : 0xFF);
-        index++;
+        drawCell(cell, 12, -position.x, -position.y, this->objectManager->isMapVisible() ? 0x30 : 0xFF);
     }
 }
 

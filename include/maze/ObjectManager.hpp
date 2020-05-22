@@ -23,7 +23,9 @@ public:
     void handleEvent(SDL_Event& e);
     bool isMapVisible();
     std::vector<Cell> getCells();
-    std::vector<Cell> getRoom();;
+    std::vector<Cell> getRoom();
+    Position getPosition();
+
     static const int CELL_SIZE = 20;
     static const int WALL_SIZE = CELL_SIZE * 0.1;
     static const int MAZE_COLUMNS = 10;
@@ -33,7 +35,7 @@ private:
 
     bool isInside(int x, int y, Cell cell);
     
-    const int DOT_MOVE = 1;
+    const int DOT_MOVE = 8;
     int boardX;
     int boardY;
     int boardWidth;
