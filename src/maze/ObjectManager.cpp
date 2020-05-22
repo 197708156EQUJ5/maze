@@ -73,34 +73,15 @@ void ObjectManager::handleEvent(SDL_Event& e)
                 break;
         }
     }
-    //If a key was released
-    //else if (e.type == SDL_KEYUP && e.key.repeat == 0)
-    else if (e.type == SDL_KEYUP)
-    {
-        //Adjust the velocity
-        switch (e.key.keysym.sym)
-        {
-            case SDLK_UP:
-                y += DOT_MOVE;
-                break;
-            case SDLK_DOWN:
-                y -= DOT_MOVE;
-                break;
-            case SDLK_LEFT:
-                x += DOT_MOVE;
-                break;
-            case SDLK_RIGHT:
-                x -= DOT_MOVE;
-                break;
-        }
-    }
 
-    if (e.key.keysym.sym == 109 && e.type == SDL_KEYDOWN)
+    if (e.key.keysym.sym == SDLK_m && e.type == SDL_KEYDOWN)
     {
         this->showMap = !this->showMap;
     }
-
-    std::cout << x << ", " << y << std::endl;
+    else
+    {
+        std::cout << x << ", " << y << std::endl;
+    }
 }
 
 bool ObjectManager::isMapVisible()
