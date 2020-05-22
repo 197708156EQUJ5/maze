@@ -57,7 +57,8 @@ bool Board::init()
             {
                 //Initialize renderer color
                 SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-
+                
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
                 //Initialize PNG loading
                 int imgFlags = IMG_INIT_PNG;
                 if (!(IMG_Init(imgFlags) & imgFlags))
@@ -111,13 +112,13 @@ void Board::gameLoop()
                     break;
             }
         }
+        drawRoom();
         
         if (this->objectManager->isMapVisible())
         {
             drawMap();
         }
 
-        drawRoom();
 
         this->objectManager->render();
 
@@ -128,38 +129,44 @@ void Board::gameLoop()
 
 void Board::drawRoom()
 {
-    //std::cout << "room size: " << this->objectManager->getRoom().size() << std::endl;
-    for (Cell cell : this->objectManager->getRoom())
+    int roomSize = this->objectManager->getRoom().size();
+
+    int index = 0;
+    for (Cell &cell : this->objectManager->getRoom())
     {
-        drawCell(cell, 2, 50);
+        cell.row = index / 2;
+        cell.col = index % 2;
+        drawCell(cell, 12, 80, 0, this->objectManager->isMapVisible() ? 0x30 : 0xFF);
+        index++;
     }
 }
 
 void Board::drawMap()
 {
-    for (Cell cell : this->objectManager->getCells())
-    {
-        drawCell(cell, 1, 10);        
-    }
-
-    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0xA9, 0xA9, 0xA9, 0x44);
     SDL_Rect mapRect;
     mapRect.x = 9;
     mapRect.y = 9;
     mapRect.w = ObjectManager::MAZE_COLUMNS * ObjectManager::CELL_SIZE + 2;
     mapRect.h = ObjectManager::MAZE_ROWS * ObjectManager::CELL_SIZE + 2;
 
-    SDL_RenderDrawRect(renderer, &mapRect);
+    SDL_RenderFillRect(renderer, &mapRect);
+    
+    for (Cell cell : this->objectManager->getCells())
+    {
+        drawCell(cell, 1, 10, 10, SDL_ALPHA_OPAQUE);        
+    }
+
 }
 
-void Board::drawCell(Cell cell, int cellRatio, int cellOffset)
+void Board::drawCell(Cell cell, int cellRatio, int cellOffsetX, int cellOffsetY, uint8_t alpha)
 {
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, alpha);
     if (cell.hasNorth)
     {
         SDL_Rect wallRect;
-        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
-        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetX;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetY;
         wallRect.w = ObjectManager::CELL_SIZE * cellRatio;
         wallRect.h = ObjectManager::WALL_SIZE * cellRatio;
 
@@ -169,8 +176,8 @@ void Board::drawCell(Cell cell, int cellRatio, int cellOffset)
     {
         SDL_Rect wallRect;
         wallRect.x = (((cell.col * ObjectManager::CELL_SIZE) + (ObjectManager::CELL_SIZE - ObjectManager::WALL_SIZE)) * 
-            cellRatio) + cellOffset;
-        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+            cellRatio) + cellOffsetX;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetY;
         wallRect.w = ObjectManager::WALL_SIZE * cellRatio;
         wallRect.h = ObjectManager::CELL_SIZE * cellRatio;
 
@@ -179,9 +186,9 @@ void Board::drawCell(Cell cell, int cellRatio, int cellOffset)
     if (cell.hasSouth)
     {
         SDL_Rect wallRect;
-        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetX;
         wallRect.y = (((cell.row * ObjectManager::CELL_SIZE) + (ObjectManager::CELL_SIZE - ObjectManager::WALL_SIZE)) * 
-            cellRatio) + cellOffset;
+            cellRatio) + cellOffsetY;
         wallRect.w = ObjectManager::CELL_SIZE * cellRatio;
         wallRect.h = ObjectManager::WALL_SIZE * cellRatio;
 
@@ -190,8 +197,8 @@ void Board::drawCell(Cell cell, int cellRatio, int cellOffset)
     if (cell.hasWest)
     {
         SDL_Rect wallRect;
-        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
-        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetX;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffsetY;
         wallRect.w = ObjectManager::WALL_SIZE * cellRatio;
         wallRect.h = ObjectManager::CELL_SIZE * cellRatio;
 

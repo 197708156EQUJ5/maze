@@ -35,7 +35,7 @@ private:
     const int BOARD_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
  
     void drawBoard();
-    void drawCell(Cell, int, int);
+    void drawCell(Cell, int, int, int, uint8_t alpha);
     bool loadMedia();
     void drawMap();
     void drawRoom();
