@@ -1,5 +1,7 @@
 #include "maze/Board.hpp"
 
+#include "maze/Position.hpp"
+
 #include <iostream>
 #include <sstream>
 
@@ -110,11 +112,12 @@ void Board::gameLoop()
             }
         }
         
-        //this->objectManager->updateDot();
         if (this->objectManager->isMapVisible())
         {
             drawMap();
         }
+
+        drawRoom();
 
         this->objectManager->render();
 
@@ -123,52 +126,76 @@ void Board::gameLoop()
     }
 }
 
+void Board::drawRoom()
+{
+    //std::cout << "room size: " << this->objectManager->getRoom().size() << std::endl;
+    for (Cell cell : this->objectManager->getRoom())
+    {
+        drawCell(cell, 2, 50);
+    }
+}
+
 void Board::drawMap()
 {
     for (Cell cell : this->objectManager->getCells())
     {
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
-        
-        if (cell.hasNorth)
-        {
-            SDL_Rect wallRect;
-            wallRect.x = (cell.col * cell.SIZE);
-            wallRect.y = cell.row * cell.SIZE;
-            wallRect.w = cell.SIZE;
-            wallRect.h = cell.WALL_SIZE;
+        drawCell(cell, 1, 10);        
+    }
 
-            SDL_RenderFillRect(renderer, &wallRect);
-        }
-        if (cell.hasEast)
-        {
-            SDL_Rect wallRect;
-            wallRect.x = (cell.col * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
-            wallRect.y = cell.row * cell.SIZE;
-            wallRect.w = cell.WALL_SIZE;
-            wallRect.h = cell.SIZE;
+    SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE);
+    SDL_Rect mapRect;
+    mapRect.x = 9;
+    mapRect.y = 9;
+    mapRect.w = ObjectManager::MAZE_COLUMNS * ObjectManager::CELL_SIZE + 2;
+    mapRect.h = ObjectManager::MAZE_ROWS * ObjectManager::CELL_SIZE + 2;
 
-            SDL_RenderFillRect(renderer, &wallRect);
-        }
-        if (cell.hasSouth)
-        {
-            SDL_Rect wallRect;
-            wallRect.x = (cell.col * cell.SIZE);
-            wallRect.y = (cell.row * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
-            wallRect.w = cell.SIZE;
-            wallRect.h = cell.WALL_SIZE;
+    SDL_RenderDrawRect(renderer, &mapRect);
+}
 
-            SDL_RenderFillRect(renderer, &wallRect);
-        }
-        if (cell.hasWest)
-        {
-            SDL_Rect wallRect;
-            wallRect.x = cell.col * cell.SIZE;
-            wallRect.y = cell.row * cell.SIZE;
-            wallRect.w = cell.WALL_SIZE;
-            wallRect.h = cell.SIZE;
+void Board::drawCell(Cell cell, int cellRatio, int cellOffset)
+{
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
+    if (cell.hasNorth)
+    {
+        SDL_Rect wallRect;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.w = ObjectManager::CELL_SIZE * cellRatio;
+        wallRect.h = ObjectManager::WALL_SIZE * cellRatio;
 
-            SDL_RenderFillRect(renderer, &wallRect);
-        }
+        SDL_RenderFillRect(renderer, &wallRect);
+    }
+    if (cell.hasEast)
+    {
+        SDL_Rect wallRect;
+        wallRect.x = (((cell.col * ObjectManager::CELL_SIZE) + (ObjectManager::CELL_SIZE - ObjectManager::WALL_SIZE)) * 
+            cellRatio) + cellOffset;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.w = ObjectManager::WALL_SIZE * cellRatio;
+        wallRect.h = ObjectManager::CELL_SIZE * cellRatio;
+
+        SDL_RenderFillRect(renderer, &wallRect);
+    }
+    if (cell.hasSouth)
+    {
+        SDL_Rect wallRect;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.y = (((cell.row * ObjectManager::CELL_SIZE) + (ObjectManager::CELL_SIZE - ObjectManager::WALL_SIZE)) * 
+            cellRatio) + cellOffset;
+        wallRect.w = ObjectManager::CELL_SIZE * cellRatio;
+        wallRect.h = ObjectManager::WALL_SIZE * cellRatio;
+
+        SDL_RenderFillRect(renderer, &wallRect);
+    }
+    if (cell.hasWest)
+    {
+        SDL_Rect wallRect;
+        wallRect.x = (cell.col * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.y = (cell.row * ObjectManager::CELL_SIZE * cellRatio) + cellOffset;
+        wallRect.w = ObjectManager::WALL_SIZE * cellRatio;
+        wallRect.h = ObjectManager::CELL_SIZE * cellRatio;
+
+        SDL_RenderFillRect(renderer, &wallRect);
     }
 }
 

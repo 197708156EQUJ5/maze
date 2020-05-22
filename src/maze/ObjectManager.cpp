@@ -17,8 +17,7 @@ ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHe
     boardWidth(boardWidth),
     boardHeight(boardHeight),
     lTexture(lTexture),
-    x((boardWidth - boardX) / 2),
-    y((boardHeight - boardY) / 2),
+    position({(MAZE_COLUMNS * CELL_SIZE) / 2, (MAZE_ROWS * CELL_SIZE) / 2}),
     showMap(false)
 {
 }
@@ -60,16 +59,16 @@ void ObjectManager::handleEvent(SDL_Event& e)
         switch (e.key.keysym.sym)
         {
             case SDLK_UP:
-                y -= DOT_MOVE;
+                position.y -= DOT_MOVE;
                 break;
             case SDLK_DOWN:
-                y += DOT_MOVE;
+                position.y += DOT_MOVE;
                 break;
             case SDLK_LEFT:
-                x -= DOT_MOVE;
+                position.x -= DOT_MOVE;
                 break;
             case SDLK_RIGHT:
-                x += DOT_MOVE;
+                position.x += DOT_MOVE;
                 break;
         }
     }
@@ -80,13 +79,70 @@ void ObjectManager::handleEvent(SDL_Event& e)
     }
     else
     {
-        std::cout << x << ", " << y << std::endl;
+        std::cout << position.x << ", " << position.y << std::endl;
     }
 }
 
 bool ObjectManager::isMapVisible()
 {
     return showMap;
+}
+
+std::vector<Cell> ObjectManager::getRoom()
+{
+    std::vector<Cell> room;
+    for (Cell cell : this->cells)
+    {
+        if (isInside(position.x, position.y, cell))
+        {
+            room.push_back(cell);
+        }
+    }
+
+    return room;
+}
+
+bool ObjectManager::isInside(int x, int y, Cell cell)
+{
+    int cellX = (cell.col * ObjectManager::CELL_SIZE);
+    int cellY = (cell.row * ObjectManager::CELL_SIZE);
+    bool isInside = false;
+    if (x + (ObjectManager::CELL_SIZE / 2) >= cellX || x - (ObjectManager::CELL_SIZE / 2) >= cellX)
+    {
+        isInside = true;
+    }
+    else
+    {
+        return false;
+    }
+    if (y + (ObjectManager::CELL_SIZE / 2) > cellY || y - (ObjectManager::CELL_SIZE / 2) > cellY)
+    {
+        isInside = true;
+    }
+    else
+    {
+        return false;
+    }
+    if (x + (ObjectManager::CELL_SIZE / 2) <= cellX + ObjectManager::CELL_SIZE || 
+            x - (ObjectManager::CELL_SIZE / 2) <= cellX + ObjectManager::CELL_SIZE)
+    {
+        isInside = true;
+    }
+    else
+    {
+        return false;
+    }
+    if (y + (ObjectManager::CELL_SIZE / 2) <= cellY + ObjectManager::CELL_SIZE || 
+            y - (ObjectManager::CELL_SIZE / 2) <= cellY + ObjectManager::CELL_SIZE)
+    {
+        isInside = true;
+    }
+    else
+    {
+        return false;
+    }
+
+    return isInside;
 }
 
 } // namespace maze

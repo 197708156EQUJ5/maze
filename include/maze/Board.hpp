@@ -20,10 +20,8 @@ public:
     ~Board() = default;
 
     bool init();
-    void close();
     void gameLoop();
-    bool loadMedia();
-    void drawMap();
+    void close();
 
 private:
     //Screen dimension constants
@@ -35,10 +33,12 @@ private:
     const int BOARD_HEIGHT = 480;
     const int BOARD_X = (SCREEN_WIDTH - BOARD_WIDTH) / 2;
     const int BOARD_Y = (SCREEN_HEIGHT - BOARD_HEIGHT) / 2;
-    
-    void mousePressed(SDL_MouseButtonEvent& b);
-    void mouseMoved(SDL_MouseMotionEvent& e);
+ 
     void drawBoard();
+    void drawCell(Cell, int, int);
+    bool loadMedia();
+    void drawMap();
+    void drawRoom();
 
     bool isCursorVertical;
     SDL_Cursor* cursor;
