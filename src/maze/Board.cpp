@@ -111,57 +111,64 @@ void Board::gameLoop()
         }
         
         //this->objectManager->updateDot();
-        
-        for (Cell cell : this->objectManager->getCells())
+        if (this->objectManager->isMapVisible())
         {
-            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
-            
-            if (cell.hasNorth)
-            {
-                SDL_Rect wallRect;
-                wallRect.x = (cell.col * cell.SIZE);
-                wallRect.y = cell.row * cell.SIZE;
-                wallRect.w = cell.SIZE;
-                wallRect.h = cell.WALL_SIZE;
-    
-                SDL_RenderFillRect(renderer, &wallRect);
-            }
-            if (cell.hasEast)
-            {
-                SDL_Rect wallRect;
-                wallRect.x = (cell.col * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
-                wallRect.y = cell.row * cell.SIZE;
-                wallRect.w = cell.WALL_SIZE;
-                wallRect.h = cell.SIZE;
-    
-                SDL_RenderFillRect(renderer, &wallRect);
-            }
-            if (cell.hasSouth)
-            {
-                SDL_Rect wallRect;
-                wallRect.x = (cell.col * cell.SIZE);
-                wallRect.y = (cell.row * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
-                wallRect.w = cell.SIZE;
-                wallRect.h = cell.WALL_SIZE;
-    
-                SDL_RenderFillRect(renderer, &wallRect);
-            }
-            if (cell.hasWest)
-            {
-                SDL_Rect wallRect;
-                wallRect.x = cell.col * cell.SIZE;
-                wallRect.y = cell.row * cell.SIZE;
-                wallRect.w = cell.WALL_SIZE;
-                wallRect.h = cell.SIZE;
-    
-                SDL_RenderFillRect(renderer, &wallRect);
-            }
+            drawMap();
         }
 
         this->objectManager->render();
 
         //Update screen
         SDL_RenderPresent(renderer);
+    }
+}
+
+void Board::drawMap()
+{
+    for (Cell cell : this->objectManager->getCells())
+    {
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, SDL_ALPHA_OPAQUE);
+        
+        if (cell.hasNorth)
+        {
+            SDL_Rect wallRect;
+            wallRect.x = (cell.col * cell.SIZE);
+            wallRect.y = cell.row * cell.SIZE;
+            wallRect.w = cell.SIZE;
+            wallRect.h = cell.WALL_SIZE;
+
+            SDL_RenderFillRect(renderer, &wallRect);
+        }
+        if (cell.hasEast)
+        {
+            SDL_Rect wallRect;
+            wallRect.x = (cell.col * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
+            wallRect.y = cell.row * cell.SIZE;
+            wallRect.w = cell.WALL_SIZE;
+            wallRect.h = cell.SIZE;
+
+            SDL_RenderFillRect(renderer, &wallRect);
+        }
+        if (cell.hasSouth)
+        {
+            SDL_Rect wallRect;
+            wallRect.x = (cell.col * cell.SIZE);
+            wallRect.y = (cell.row * cell.SIZE) + (cell.SIZE - cell.WALL_SIZE);
+            wallRect.w = cell.SIZE;
+            wallRect.h = cell.WALL_SIZE;
+
+            SDL_RenderFillRect(renderer, &wallRect);
+        }
+        if (cell.hasWest)
+        {
+            SDL_Rect wallRect;
+            wallRect.x = cell.col * cell.SIZE;
+            wallRect.y = cell.row * cell.SIZE;
+            wallRect.w = cell.WALL_SIZE;
+            wallRect.h = cell.SIZE;
+
+            SDL_RenderFillRect(renderer, &wallRect);
+        }
     }
 }
 

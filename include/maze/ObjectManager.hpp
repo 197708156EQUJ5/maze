@@ -21,6 +21,7 @@ public:
     void render();
     std::vector<Cell> getCells();
     void handleEvent(SDL_Event& e);
+    bool isMapVisible();
 
 private:
     
@@ -32,10 +33,11 @@ private:
     int boardWidth;
     int boardHeight;
     LTexture lTexture;
-    std::vector<Cell> cells;
-
     int x;
     int y;
+    bool showMap;
+    std::vector<Cell> cells;
+
 };
 
 } // namespace maze

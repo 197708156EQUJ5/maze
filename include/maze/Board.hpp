@@ -23,6 +23,7 @@ public:
     void close();
     void gameLoop();
     bool loadMedia();
+    void drawMap();
 
 private:
     //Screen dimension constants

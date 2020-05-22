@@ -18,7 +18,8 @@ ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHe
     boardHeight(boardHeight),
     lTexture(lTexture),
     x((boardWidth - boardX) / 2),
-    y((boardHeight - boardY) / 2)
+    y((boardHeight - boardY) / 2),
+    showMap(false)
 {
 }
 
@@ -94,7 +95,17 @@ void ObjectManager::handleEvent(SDL_Event& e)
         }
     }
 
+    if (e.key.keysym.sym == 109 && e.type == SDL_KEYDOWN)
+    {
+        this->showMap = !this->showMap;
+    }
+
     std::cout << x << ", " << y << std::endl;
+}
+
+bool ObjectManager::isMapVisible()
+{
+    return showMap;
 }
 
 } // namespace maze
