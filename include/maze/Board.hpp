@@ -45,6 +45,7 @@ private:
     SDL_Window* window;
     SDL_Renderer* renderer;
     LTexture atomTexture;
+    LTexture mapTexture;
 
     std::unique_ptr<ObjectManager> objectManager;
 

@@ -73,6 +73,7 @@ bool Board::init()
     }
     
     atomTexture.setRenderer(renderer);
+    mapTexture.setRenderer(renderer);
 
     if (!loadMedia())
     {
@@ -87,7 +88,8 @@ void Board::gameLoop()
     bool quit = false;
     SDL_Event e;
 
-    this->objectManager = std::make_unique<ObjectManager>(SCREEN_X, SCREEN_Y, BOARD_WIDTH, BOARD_HEIGHT, atomTexture);
+    this->objectManager = std::make_unique<ObjectManager>(SCREEN_X, SCREEN_Y, BOARD_WIDTH, BOARD_HEIGHT, 
+            atomTexture, mapTexture);
     this->objectManager->createCells();
 
     while(!quit)
@@ -149,7 +151,10 @@ void Board::drawMap()
     
     for (Cell cell : this->objectManager->getCells())
     {
-        drawCell(cell, 1, 10, 10, SDL_ALPHA_OPAQUE);        
+        if (!cell.isHidden)
+        {
+            drawCell(cell, 1, 10, 10, SDL_ALPHA_OPAQUE);
+        }
     }
 
 }
@@ -212,6 +217,11 @@ bool Board::loadMedia()
         std::cout << "Failed to load dot texture!" << std::endl;
         success = false;
     }
+    if(!mapTexture.loadFromFile("resources/red_dot_2x2.png"))
+    {
+        std::cout << "Failed to load dot texture!" << std::endl;
+        success = false;
+    }
 
     return success;
 }
@@ -220,6 +230,7 @@ void Board::close()
 {
     //Free loaded images
     atomTexture.free();
+    mapTexture.free();
 
     //Destroy window    
     SDL_DestroyRenderer(renderer);

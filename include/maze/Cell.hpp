@@ -8,5 +8,6 @@ struct Cell
     bool hasWest;
     int row;
     int col;
+    bool isHidden;
 };
 

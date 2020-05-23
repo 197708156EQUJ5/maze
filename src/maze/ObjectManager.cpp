@@ -11,13 +11,16 @@
 namespace maze
 {
 
-ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, int boardHeight, LTexture &lTexture) :
+ObjectManager::ObjectManager(int boardX, int boardY, int boardWidth, 
+        int boardHeight, LTexture &roomTexture, LTexture &mapTexture) :
     boardX(boardX),
     boardY(boardY),
     boardWidth(boardWidth),
     boardHeight(boardHeight),
-    lTexture(lTexture),
-    position({((MAZE_COLUMNS * CELL_SIZE) / 2) * 8, ((MAZE_ROWS * CELL_SIZE) / 2) * 8}),
+    roomTexture(roomTexture),
+    mapTexture(mapTexture),
+    mapPosition({((MAZE_COLUMNS * CELL_SIZE) / 2), ((MAZE_ROWS * CELL_SIZE) / 2)}),
+    position({mapPosition.x * 8, mapPosition.y * 8}),
     showMap(false)
 {
 }
@@ -32,7 +35,11 @@ void ObjectManager::createCells()
         Cell cell = CellFactory::convertCellCode(cellCode);
         cell.row = index / MAZE_ROWS;
         cell.col = index % MAZE_COLUMNS;
-        
+       
+        if (isInside(mapPosition.x, mapPosition.y, cell))
+        {
+            cell.isHidden = false;
+        }
         cells.push_back(cell);
         
         index++;
@@ -41,7 +48,11 @@ void ObjectManager::createCells()
 
 void ObjectManager::render()
 {
-    lTexture.render((boardWidth - boardX) / 2, (boardHeight - boardY) / 2);
+    roomTexture.render((boardWidth - boardX) / 2, (boardHeight - boardY) / 2);
+    if (showMap)
+    {
+        mapTexture.render(mapPosition.x, mapPosition.y);
+    }
 }
 
 std::vector<Cell> ObjectManager::getCells()
@@ -51,25 +62,34 @@ std::vector<Cell> ObjectManager::getCells()
 
 void ObjectManager::handleEvent(SDL_Event& e)
 {
-    //If a key was pressed
-    //if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
     if (e.type == SDL_KEYDOWN)
     {
-        //Adjust the velocity
         switch (e.key.keysym.sym)
         {
             case SDLK_UP:
                 position.y -= DOT_MOVE;
+                mapPosition.y -= MAP_DOT_MOVE;
                 break;
             case SDLK_DOWN:
                 position.y += DOT_MOVE;
+                mapPosition.y += MAP_DOT_MOVE;
                 break;
             case SDLK_LEFT:
                 position.x -= DOT_MOVE;
+                mapPosition.x -= MAP_DOT_MOVE;
                 break;
             case SDLK_RIGHT:
                 position.x += DOT_MOVE;
+                mapPosition.x += MAP_DOT_MOVE;
                 break;
+        }
+    }
+
+    for (Cell &cell : this->cells)
+    {
+        if (isInside(mapPosition.x, mapPosition.y, cell))
+        {
+            cell.isHidden = false;
         }
     }
 
@@ -79,7 +99,7 @@ void ObjectManager::handleEvent(SDL_Event& e)
     }
     else
     {
-        std::cout << position.x << ", " << position.y << std::endl;
+        //std::cout << position.x << ", " << position.y << std::endl;
     }
 }
 

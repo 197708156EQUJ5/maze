@@ -14,7 +14,8 @@ class ObjectManager
 {
 public:
 
-    ObjectManager(int boardX, int boardY, int boardWidth, int boardHeight, LTexture &lTexture);
+    ObjectManager(int boardX, int boardY, int boardWidth, int boardHeight, 
+            LTexture &roomTexture, LTexture &mapTexture);
     ~ObjectManager() = default;
 
     void createCells();
@@ -35,12 +36,15 @@ private:
 
     bool isInside(int x, int y, Cell cell);
     
-    const int DOT_MOVE = 8;
+    const int DOT_MOVE = 12;
+    const int MAP_DOT_MOVE = 1;
     int boardX;
     int boardY;
     int boardWidth;
     int boardHeight;
-    LTexture lTexture;
+    LTexture roomTexture;
+    LTexture mapTexture;
+    Position mapPosition;
     Position position;
     bool showMap;
     std::vector<Cell> cells;
